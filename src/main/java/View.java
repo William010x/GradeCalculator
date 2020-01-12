@@ -1,9 +1,17 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+/** 
+ * GUI Class
+ * The GUI view for the grade calculator
+ * @author William San
+ * @since 01/04/20 
+ */ 
 public class View extends JPanel {
-	private static final int DEFAULT_ENTRIES = 3; // Default number of entries when starting
+	// Initialize variables
+	private static final int DEFAULT_ENTRIES = 4; // Default number of entries when starting
 	// Model model;
 	
 	JButton add;       // Add button
@@ -20,8 +28,8 @@ public class View extends JPanel {
 	JPanel exam;                        // Panel containing final exam mark required
 	JPanel buttonPanel;                 // Panel containing the buttons
 	
-	JTextField desiredText;
-	JTextField examText;
+	JTextField desiredText; // Text box for desired mark input
+	JTextField examText;    // Text box for final exam mark required
 	
 	ArrayList<JPanel> entries = new ArrayList<JPanel>(); // List of all components of entries to enter grades
   
@@ -35,9 +43,13 @@ public class View extends JPanel {
 		//this.model.setView(this);
 		this.layoutView();
 		this.registerControllers();
-		this.update();
+		//this.update();
 	}
-  
+	
+	/** 
+	 * Creates a new input field with text boxes and a remove button
+	 * @return The panel containing all input field components 
+	 */
 	private JPanel createEntry() {
 		// Initializing components
 		JTextField assessment = new JTextField(25);
@@ -155,6 +167,13 @@ public class View extends JPanel {
     	input.add(Box.createRigidArea(new Dimension(0, 10)));
     	for (int i = 0; i < entries.size(); i++) {
     		input.add(entries.get(i));
+    		
+    		JButton remove = (JButton)(this.entries.get(i).getComponent(7));
+    		for (ActionListener oldController: remove.getActionListeners()) {
+    			remove.removeActionListener(oldController);
+    		}
+    		remove.addActionListener(new RemoveController(this, i));
+    		
     		input.add(Box.createRigidArea(new Dimension(0, 10)));
     	}
     	input.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -192,13 +211,49 @@ public class View extends JPanel {
 	 * Registers the controllers for text fields and buttons 
 	 */
 	private void registerControllers() {
-
+		AddController addController = new AddController(this);
+	    
+	    this.add.addActionListener(addController);
 	}
-  
+	
+	/** 
+	 * Adds a new input field to the view
+	 */
+	public void addEntry() {
+		this.entries.add(createEntry());
+		this.update();
+	}
+	
+	/** 
+	 * Adds a new input field to the view
+	 */
+	public void removeEntry(int index) {
+		this.entries.remove(index);
+		this.update();
+	}
+	
 	/** 
 	 * Updates the input fields after adding/removing/generating/resetting 
 	 */
 	public void update() {
-    
+		this.input.removeAll();
+		
+		this.input.add(Box.createRigidArea(new Dimension(0, 10)));
+    	for (int i = 0; i < this.entries.size(); i++) {
+    		this.input.add(entries.get(i));
+    		
+    		JButton remove = (JButton)(this.entries.get(i).getComponent(7));
+    		for (ActionListener oldController: remove.getActionListeners()) {
+    			remove.removeActionListener(oldController);
+    		}
+    		remove.addActionListener(new RemoveController(this, i));
+    		
+    		this.input.add(Box.createRigidArea(new Dimension(0, 10)));
+    	}
+    	this.input.add(Box.createRigidArea(new Dimension(0, 10)));
+    	this.addPanel.add(add);
+    	this.input.add(addPanel);
+    	
+    	this.inputPane.setViewportView(input);
   	}
 }
