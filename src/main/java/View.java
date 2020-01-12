@@ -212,8 +212,10 @@ public class View extends JPanel {
 	 */
 	private void registerControllers() {
 		AddController addController = new AddController(this);
+		ResetController resetController = new ResetController(this);
 	    
 	    this.add.addActionListener(addController);
+	    this.reset.addActionListener(resetController);
 	}
 	
 	/** 
@@ -225,10 +227,27 @@ public class View extends JPanel {
 	}
 	
 	/** 
-	 * Adds a new input field to the view
+	 * Removes an input field from the view
 	 */
 	public void removeEntry(int index) {
 		this.entries.remove(index);
+		this.update();
+	}
+	
+	/** 
+	 * Adds a new input field to the view
+	 */
+	public void reset() {
+		for (int i = 0; i < this.entries.size(); i++) {
+			JTextField assessment = (JTextField)(this.entries.get(i).getComponent(1));
+			JTextField grade = (JTextField)(this.entries.get(i).getComponent(3));
+			JTextField weight = (JTextField)(this.entries.get(i).getComponent(5));
+			
+			assessment.setText("");
+			grade.setText("");
+			weight.setText("");
+		}
+		this.desiredText.setText("85");
 		this.update();
 	}
 	
