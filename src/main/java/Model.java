@@ -46,6 +46,14 @@ public class Model {
 	}
 	
 	/** 
+	 * Sets the course name to the argument provided 
+	 * @param course The name of the course
+	 */
+	public void setCourse(String course) {
+		this.course = course;
+	}
+	
+	/** 
 	 * Adds a grade according to the arguments provided 
 	 * @param assessment The name of the assessment
 	 * @param mark       The mark received on that assessment

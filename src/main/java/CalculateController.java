@@ -27,6 +27,9 @@ public class CalculateController implements ActionListener {
 	 * @param e The event sent from the button 
 	 */
   	public void actionPerformed(ActionEvent e) {
+  		// Store course information
+  		this.model.setCourse(this.view.courseText.getText());
+  		
   		// Store grade information
   		this.model.resetGrades();
   		

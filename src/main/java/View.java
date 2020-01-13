@@ -24,6 +24,7 @@ public class View extends JPanel {
 	
 	static JFrame error = new JFrame(); // Frame for displaying errorPane
 	static JOptionPane errorPane;       // Pane showing error message
+	JPanel namePanel;                   // Panel where user can enter name of course
 	JPanel input;                       // Panel containing all input fields
 	JScrollPane inputPane;              // Scroll pane containing input panel
 	JPanel addPanel;                    // Panel containing add button
@@ -31,7 +32,8 @@ public class View extends JPanel {
 	JPanel desired;                     // Panel containing desired mark
 	JPanel exam;                        // Panel containing final exam mark required
 	JPanel buttonPanel;                 // Panel containing the buttons
-	
+
+	JTextField courseText;  // Text box for name of course
 	JTextField desiredText; // Text box for desired mark input
 	JTextField examText;    // Text box for final exam mark required
 	
@@ -117,6 +119,7 @@ public class View extends JPanel {
 			entries.add(createEntry());
 		}
 		
+		namePanel = new JPanel();
 		input = new JPanel();
 		addPanel = new JPanel();
 		markPanel = new JPanel();
@@ -128,7 +131,8 @@ public class View extends JPanel {
 		add = new JButton("Add another grade");
 		calculate = new JButton("Calculate");
 		reset = new JButton("Reset");
-		
+
+		courseText = new JTextField(15);
 		desiredText = new JTextField(7);
 		examText = new JTextField(7);
 		desiredText.setText("85");
@@ -136,6 +140,7 @@ public class View extends JPanel {
     	examText.setHorizontalAlignment(JTextField.CENTER);
     	examText.setEditable(false);
 
+		JLabel courseLabel = new JLabel("Course name: ");
 		JLabel desiredLabel = new JLabel("DESIRED MARK: ");
     	JLabel examLabel = new JLabel("REQUIRED EXAM MARK: ");
     	
@@ -162,6 +167,7 @@ public class View extends JPanel {
     	exam.setBorder(BorderFactory.createLoweredBevelBorder());
     
     	// Setting sizes
+    	namePanel.setMaximumSize(new Dimension(300, 600));
     	add.setMaximumSize(new Dimension(90, 30));
     	addPanel.setMaximumSize(new Dimension(620, 40));
     	desiredText.setMaximumSize(new Dimension(100, 40));
@@ -179,6 +185,9 @@ public class View extends JPanel {
     	
     
     	// Adding sub-components
+    	namePanel.add(courseLabel);
+    	namePanel.add(courseText);
+    	
     	input.add(Box.createRigidArea(new Dimension(0, 10)));
     	for (int i = 0; i < entries.size(); i++) {
     		input.add(entries.get(i));
@@ -216,6 +225,7 @@ public class View extends JPanel {
     	error.add(errorPane);
     	
     	// Adding final components
+    	this.add(namePanel);
     	this.add(inputPane);
     	this.add(markPanel);
     	this.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -264,6 +274,7 @@ public class View extends JPanel {
 			grade.setText("");
 			weight.setText("");
 		}
+		this.courseText.setText("");
 		this.desiredText.setText("85");
 		this.examText.setText("");
 		this.update();
