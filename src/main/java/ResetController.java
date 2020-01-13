@@ -2,13 +2,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /** 
- * AddController Class
- * The controller for the add button (to add another input field)
+ * ResetController Class
+ * The controller for the reset button (to empty all fields)
  * @author William San
- * @since 1/04/20 
+ * @since 1/12/20 
  */ 
 public class ResetController implements ActionListener {
-	View view; // The GUI view for display
+	private View view; // The GUI view for display
 	
 	/**
 	 * Default constructor

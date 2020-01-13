@@ -4,7 +4,7 @@ import java.awt.event.*;
  * AddController Class
  * The controller for the add button (to add another input field)
  * @author William San
- * @since 1/04/20 
+ * @since 1/12/20 
  */ 
 public class AddController implements ActionListener {
 	View view; // The GUI view for display

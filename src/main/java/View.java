@@ -4,15 +4,19 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 /** 
- * GUI Class
+ * View Class
  * The GUI view for the grade calculator
  * @author William San
- * @since 01/04/20 
+ * @since 01/12/20 
  */ 
 public class View extends JPanel {
 	// Initialize variables
 	private static final int DEFAULT_ENTRIES = 4; // Default number of entries when starting
-	// Model model;
+	public static final int ASSESSMENT_MODE = 1; // Mode for getting assessment component from an entry
+	public static final int GRADE_MODE = 3;      // Mode for getting grade component from an entry
+	public static final int WEIGHT_MODE = 5;     // Mode for getting weight component from an entry
+	
+	Model model;
 	
 	JButton add;       // Add button
 	JButton calculate; // Calculate button
@@ -37,13 +41,13 @@ public class View extends JPanel {
 	 * Constructor
 	 * @param model Model containing all data for grades 
 	 */
-	public View() {
+	public View(Model model) {
 		super();
-		//this.model = model;
-		//this.model.setView(this);
+		this.model = model;
+		this.model.setView(this);
 		this.layoutView();
 		this.registerControllers();
-		//this.update();
+		this.update();
 	}
 	
 	/** 
@@ -95,6 +99,16 @@ public class View extends JPanel {
 
 		return entry;
 	}
+	
+	/** 
+	 * Get the text field for an entry
+	 * @param index The index of the entry
+	 * @param mode  The type of component to return (assessment, grade or weight)
+	 * @return The corresponding JTextField for an entry
+	 */
+	public JTextField getEntryField(int index, int mode) {
+		return (JTextField)(this.entries.get(index).getComponent(mode));
+	}
   
 	/** Lays out the components on the JPanel */
 	private void layoutView() {
@@ -119,7 +133,8 @@ public class View extends JPanel {
 		examText = new JTextField(7);
 		desiredText.setText("85");
     	desiredText.setHorizontalAlignment(JTextField.CENTER);
-    	examText.setEnabled(false);
+    	examText.setHorizontalAlignment(JTextField.CENTER);
+    	examText.setEditable(false);
 
 		JLabel desiredLabel = new JLabel("DESIRED MARK: ");
     	JLabel examLabel = new JLabel("REQUIRED EXAM MARK: ");
@@ -213,9 +228,11 @@ public class View extends JPanel {
 	private void registerControllers() {
 		AddController addController = new AddController(this);
 		ResetController resetController = new ResetController(this);
+		CalculateController calculateController = new CalculateController(this, this.model);
 	    
 	    this.add.addActionListener(addController);
 	    this.reset.addActionListener(resetController);
+	    this.calculate.addActionListener(calculateController);
 	}
 	
 	/** 
@@ -239,15 +256,16 @@ public class View extends JPanel {
 	 */
 	public void reset() {
 		for (int i = 0; i < this.entries.size(); i++) {
-			JTextField assessment = (JTextField)(this.entries.get(i).getComponent(1));
-			JTextField grade = (JTextField)(this.entries.get(i).getComponent(3));
-			JTextField weight = (JTextField)(this.entries.get(i).getComponent(5));
+			JTextField assessment = this.getEntryField(i, ASSESSMENT_MODE);
+			JTextField grade = this.getEntryField(i, WEIGHT_MODE);
+			JTextField weight = this.getEntryField(i, GRADE_MODE);
 			
 			assessment.setText("");
 			grade.setText("");
 			weight.setText("");
 		}
 		this.desiredText.setText("85");
+		this.examText.setText("");
 		this.update();
 	}
 	
