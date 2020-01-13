@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
 /** 
  * View Class
@@ -9,7 +11,7 @@ import java.util.ArrayList;
  * @author William San
  * @since 01/12/20 
  */ 
-public class View extends JPanel {
+public class View extends JPanel implements Observer {
 	// Initialize variables
 	private static final int DEFAULT_ENTRIES = 4; // Default number of entries when starting
 	public static final int ASSESSMENT_MODE = 1; // Mode for getting assessment component from an entry
@@ -112,7 +114,9 @@ public class View extends JPanel {
 		return (JTextField)(this.entries.get(index).getComponent(mode));
 	}
   
-	/** Lays out the components on the JPanel */
+	/** 
+	 * Lays out the components on the JPanel 
+	 */
 	private void layoutView() {
 		// Initializing components
 		for (int i = 0; i < DEFAULT_ENTRIES; i++) {
@@ -304,4 +308,29 @@ public class View extends JPanel {
     	
     	this.inputPane.setViewportView(input);
   	}
+
+	@Override
+	public void update(Observable arg0, Object arg1) {
+		this.examText.setText(Double.toString(this.model.getExamMark()));
+		this.update();
+	}
+	
+	/** 
+	 * Shows an error message if user inputs something invalid 
+	 * @param errorCode Determines which error occurred
+	 */
+	public static void errorMessage(int errorCode) {
+		if (errorCode == 1) {
+			errorPane.showMessageDialog(error, "Error: Invalid input. Mark/Grade must be a valid number");
+		}
+		if (errorCode == 2) {
+			errorPane.showMessageDialog(error, "Error: Invalid input. Mark/Grade must be a between 0-100");
+		}
+		else if (errorCode == 3) {
+			errorPane.showMessageDialog(error, "Error: Invalid weightings. Must add up to 100%");
+		}
+		else if (errorCode == 4) {
+			errorPane.showMessageDialog(error, "Error: IOException");
+		}
+	}
 }

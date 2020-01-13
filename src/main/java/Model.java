@@ -1,6 +1,6 @@
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -11,9 +11,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  * @author William San
  * @since 01/12/20 
  */ 
-public class Model {
-	private View view; // The view for the calculator
-	
+public class Model extends Observable {
 	private double desiredMark = 85;  // The user's desired final mark
 	private double examMark;          // The required mark that the user needs on the exam 
 	private String course = "Course"; // The name of the course
@@ -35,7 +33,7 @@ public class Model {
 	 * @param view The GUI view 
 	 */
 	public void setView(View view) {
-		this.view = view;
+		this.addObserver(view);
 	}
 	
 	/**
@@ -128,6 +126,8 @@ public class Model {
 		row.createCell(0).setCellValue("Final Mark");
 		row.createCell(3).setCellFormula("SUM(D2:D" + (rowNum - 1) + ")");
 		
+		this.setChanged();
+		
 		// Resize columns
 		for (int i = 0; i < headers.length; i++) {
 			sheet.autoSizeColumn(i);
@@ -140,15 +140,10 @@ public class Model {
 			workbook.write(file);
 			file.close();
 			workbook.close();
-		} 
-		catch (IOException e) {
-			e.printStackTrace();
 		}
-		
-		for (int i = 0; i < grades.size(); i++) {
-			System.out.println("Assessment: " + grades.get(i).getAssessment());
-			System.out.println("      Mark: " + grades.get(i).getMark());
-			System.out.println("    Weight: " + grades.get(i).getWeight());
+		catch (IOException e) {
+			View.errorMessage(4);
+			e.printStackTrace();
 		}
 	}
 	
@@ -167,7 +162,7 @@ public class Model {
 			return false;
 		}
 		else if (examWeight < 0) {
-			System.out.println("Invalid weightings.");
+			View.errorMessage(3);
 			return false;
 		}
 		else {

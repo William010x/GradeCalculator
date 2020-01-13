@@ -10,8 +10,10 @@ import javax.swing.JTextField;
  * @since 1/12/20 
  */ 
 public class CalculateController implements ActionListener {
-	private View view;   // The GUI view for display
-	private Model model; // The model for calculations
+	private View view;     // The GUI view for display
+	private Model model;   // The model for calculations
+	
+	boolean error = false; // Determines if an error occurred
 	
 	/**
 	 * Default constructor
@@ -44,36 +46,38 @@ public class CalculateController implements ActionListener {
 				this.model.setGrade(assessmentText.getText(), mark, weight);
 			}
 			else {
-				System.out.println("Error. Invalid input.");
 				break;
 			}
   		}
   		
   		// Store desired mark information
-  		if (validInput(this.view.desiredText)) {
+  		if (validInput(this.view.desiredText) && !error) {
   			this.model.setDesiredMark(Double.parseDouble(this.view.desiredText.getText()));
-  		}
-  		else {
-  			System.out.println("Error. Invalid input.");
   		}
   		
   		// Calculate final mark
-  		this.model.generateMark();
-  		
-  		this.view.examText.setText(Double.toString(this.model.getExamMark()));
+  		if (!error) {
+  			this.model.generateMark();
+  			this.model.notifyObservers();
+  		}
   	}
-  	
-  	
   	
   	/** 
   	 * Validating if the inputs are actually numbers 
   	 */
     private boolean validInput(JTextField input) {
     	try {
-    		Double.parseDouble(input.getText());
-    		return true;
+    		if (Double.parseDouble(input.getText()) < 0 || Double.parseDouble(input.getText()) > 100) {
+    			View.errorMessage(2);
+    			return false;
+    		}
+    		else {
+    			return true;
+    		}
     	} 
     	catch (NumberFormatException e) {
+    		View.errorMessage(1);
+    		error = true;
     		return false;
     	}
     }
